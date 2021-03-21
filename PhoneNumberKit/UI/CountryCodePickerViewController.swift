@@ -87,8 +87,7 @@ public class CountryCodePickerViewController: UITableViewController {
     }
 
     func commonInit() {
-        self.title = NSLocalizedString("PhoneNumberKit.CountryCodePicker.Title", value: "Choose your country", comment: "Title of CountryCodePicker ViewController")
-
+        self.title = FuncApp.appIsArabic() ? "اختر البلد" : "Choose your country"
         tableView.register(Cell.self, forCellReuseIdentifier: Cell.reuseIdentifier)
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
@@ -317,5 +316,15 @@ extension UISearchBar {
         } else {
             return self.value(forKey: "_searchField") as! UITextField
         }
+    }
+}
+
+open class FuncApp : NSObject {
+    public static func appIsArabic() -> Bool {
+        return appCurrentLanguage() == "ar"
+    }
+    
+    public static func appCurrentLanguage() -> String {
+        return (Locale.current.identifier.components(separatedBy: "_").first ?? "en")
     }
 }
