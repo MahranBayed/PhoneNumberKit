@@ -101,6 +101,10 @@ public class CountryCodePickerViewController: UITableViewController {
     let bgColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        tableView.sectionIndexColor = .white
+        tableView.separatorStyle = UITableViewCell.SeparatorStyle.singleLine
+        tableView.separatorColor = (UIColor.white).withAlphaComponent(0.2)
+        view.backgroundColor = bgColor
         if let nav = navigationController {
             shouldRestoreNavigationBarToHidden = nav.isNavigationBarHidden
             nav.setNavigationBarHidden(false, animated: true)
@@ -136,30 +140,45 @@ public class CountryCodePickerViewController: UITableViewController {
 
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Cell.reuseIdentifier, for: indexPath)
+        cell.selectionStyle = .none
         let country = self.country(for: indexPath)
 
         cell.textLabel?.text = country.prefix + " " + country.flag
+        cell.textLabel?.textColor = .white
         cell.detailTextLabel?.text = country.name
-
+        cell.detailTextLabel?.textColor = .white
         cell.textLabel?.font = .preferredFont(forTextStyle: .callout)
         cell.detailTextLabel?.font = .preferredFont(forTextStyle: .body)
-
+        cell.backgroundColor = .clear
+        cell.contentView.backgroundColor = .clear
+        
         return cell
     }
 
-    public override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    public override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        var txt = ""
+        txt = countries[section].first?.name.first.map(String.init) ?? ""
         if isFiltering {
-            return nil
+            txt = ""
         } else if section == 0, hasCurrent {
-            return NSLocalizedString("PhoneNumberKit.CountryCodePicker.Current", value: "Current", comment: "Name of \"Current\" section")
+            txt = NSLocalizedString("PhoneNumberKit.CountryCodePicker.Current", value: "Current", comment: "Name of \"Current\" section")
         } else if section == 0, !hasCurrent, hasCommon {
-            return NSLocalizedString("PhoneNumberKit.CountryCodePicker.Common", value: "Common", comment: "Name of \"Common\" section")
+            txt = NSLocalizedString("PhoneNumberKit.CountryCodePicker.Common", value: "Common", comment: "Name of \"Common\" section")
         } else if section == 1, hasCurrent, hasCommon {
-            return NSLocalizedString("PhoneNumberKit.CountryCodePicker.Common", value: "Common", comment: "Name of \"Common\" section")
+            txt = NSLocalizedString("PhoneNumberKit.CountryCodePicker.Common", value: "Common", comment: "Name of \"Common\" section")
         }
-        return countries[section].first?.name.first.map(String.init)
+        
+        let headerView = UIView(frame: CGRect(x: 20, y: 0, width: tableView.frame.size.width-20, height: 30))
+        headerView.backgroundColor = bgColor
+        let label = UILabel(frame: headerView.frame)
+        headerView.addSubview(label)
+        label.textColor = .white
+        label.text = txt
+        return headerView
     }
-
+    public override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 30
+    }
     public override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         guard !isFiltering else {
             return nil
