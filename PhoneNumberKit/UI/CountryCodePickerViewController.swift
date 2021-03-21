@@ -100,6 +100,7 @@ public class CountryCodePickerViewController: UITableViewController {
     let bgColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        //tableView.semanticContentAttribute = .forceLeftToRight
         tableView.sectionIndexColor = .white
         tableView.separatorStyle = UITableViewCell.SeparatorStyle.singleLine
         tableView.separatorColor = (UIColor.white).withAlphaComponent(0.2)
@@ -141,8 +142,10 @@ public class CountryCodePickerViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: Cell.reuseIdentifier, for: indexPath)
         cell.selectionStyle = .none
         let country = self.country(for: indexPath)
-
+        cell.semanticContentAttribute = .forceLeftToRight
         cell.textLabel?.text = country.prefix + " " + country.flag
+        cell.textLabel?.semanticContentAttribute = .forceLeftToRight
+        cell.detailTextLabel?.semanticContentAttribute = .forceLeftToRight
         cell.textLabel?.textColor = .white
         cell.detailTextLabel?.text = country.name
         cell.detailTextLabel?.textColor = .white
@@ -160,16 +163,19 @@ public class CountryCodePickerViewController: UITableViewController {
         if isFiltering {
             txt = ""
         } else if section == 0, hasCurrent {
-            txt = NSLocalizedString("PhoneNumberKit.CountryCodePicker.Current", value: "Current", comment: "Name of \"Current\" section")
+            txt = FuncApp.appIsArabic() ? "الحالي" : "Current"
         } else if section == 0, !hasCurrent, hasCommon {
             txt = NSLocalizedString("PhoneNumberKit.CountryCodePicker.Common", value: "Common", comment: "Name of \"Common\" section")
         } else if section == 1, hasCurrent, hasCommon {
             txt = NSLocalizedString("PhoneNumberKit.CountryCodePicker.Common", value: "Common", comment: "Name of \"Common\" section")
         }
-        
-        let headerView = UIView(frame: CGRect(x: 20, y: 0, width: tableView.frame.size.width-20, height: 30))
+        let space:CGFloat = FuncApp.appIsArabic() ? 20.0 : 20.0
+        let width:CGFloat = FuncApp.appIsArabic() ? 40.0 : 20.0
+
+        let headerView = UIView(frame: CGRect(x: space, y: 0, width: tableView.frame.size.width-width, height: 30))
         headerView.backgroundColor = bgColor
         let label = UILabel(frame: headerView.frame)
+        //label.semanticContentAttribute = .forceLeftToRight
         headerView.addSubview(label)
         label.textColor = .white
         label.text = txt
