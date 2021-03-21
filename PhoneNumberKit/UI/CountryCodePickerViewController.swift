@@ -92,11 +92,13 @@ public class CountryCodePickerViewController: UITableViewController {
         tableView.register(Cell.self, forCellReuseIdentifier: Cell.reuseIdentifier)
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.backgroundColor = .clear
+        searchController.searchBar.backgroundColor = bgColor
+        searchController.searchBar.setDefaultSearchBar()
         navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
     }
-
+    let bgColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if let nav = navigationController {
@@ -106,11 +108,14 @@ public class CountryCodePickerViewController: UITableViewController {
         if let nav = navigationController, nav.isBeingPresented && nav.viewControllers.count == 1 {
             navigationItem.setRightBarButton(cancelButton, animated: true)
         }
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.barTintColor = bgColor
     }
 
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(shouldRestoreNavigationBarToHidden, animated: true)
+        navigationController?.navigationBar.isTranslucent = true
     }
 
     @objc func dismissAnimated() {
@@ -253,3 +258,45 @@ public extension CountryCodePickerViewController {
 }
 
 #endif
+
+extension UISearchController {
+    public func setDefaultSearchBar() {
+        self.obscuresBackgroundDuringPresentation = false
+        self.hidesNavigationBarDuringPresentation = false
+        self.dimsBackgroundDuringPresentation = false
+        self.searchBar.searchBarStyle = .minimal
+        self.definesPresentationContext = true
+        self.searchBar.setDefaultSearchBar()
+    }
+}
+extension UISearchBar {
+    public func setDefaultSearchBar() {
+        self.tintColor = .darkGray
+        self.barTintColor = .white
+        self.backgroundColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.darkGray]
+        
+        textField.leftView?.tintColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
+        //textField.placeholder = "Search"//Localization.get("country_search_placeHolder", alternate: "Search")
+        let redPlaceholderText = NSAttributedString(string: textField.placeholder ?? "", attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
+        textField.attributedPlaceholder = redPlaceholderText
+        textField.backgroundColor = .white
+        textField.textColor = .darkGray
+        let textFieldInsideSearchBar = self.value(forKey: "searchField") as? UITextField
+
+        textFieldInsideSearchBar?.textColor = .darkGray
+
+        //setImage(UIImage(named: "clearIcon"), for: .clear, state: .normal)
+        
+    }
+}
+extension UISearchBar {
+    /// Returns the`UITextField` that is placed inside the text field.
+    var textField: UITextField {
+        if #available(iOS 13, *) {
+            return searchTextField
+        } else {
+            return self.value(forKey: "_searchField") as! UITextField
+        }
+    }
+}
