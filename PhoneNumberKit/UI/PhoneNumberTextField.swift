@@ -266,6 +266,7 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
         self.autocorrectionType = .no
         self.keyboardType = .phonePad
         super.delegate = self
+        self.semanticContentAttribute = .forceLeftToRight
     }
 
     func internationalPrefix(for countryCode: String) -> String? {
