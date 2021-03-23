@@ -145,7 +145,11 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
         defaultRegion: defaultRegion,
         withPrefix: withPrefix
     )
-
+  public func updatePartialFormatter(formatter: PartialFormatter){
+        partialFormatter = formatter
+        updateFlag()
+        updateTextFieldDidEndEditing(self)
+    }
     let nonNumericSet: NSCharacterSet = {
         var mutableSet = NSMutableCharacterSet.decimalDigit().inverted
         mutableSet.remove(charactersIn: PhoneNumberConstants.plusChars)
