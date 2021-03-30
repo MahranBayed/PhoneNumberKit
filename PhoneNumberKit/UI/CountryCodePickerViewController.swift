@@ -76,7 +76,7 @@ public class CountryCodePickerViewController: UITableViewController {
         self.commonCountryCodes = commonCountryCodes
         super.init(style: .grouped)
         self.commonInit()
-        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes([NSAttributedString.Key.foregroundColor: navColor], for: .normal)
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes([NSAttributedString.Key.foregroundColor: navButtonsColor], for: .normal)
     }
 
     required init?(coder aDecoder: NSCoder) {
