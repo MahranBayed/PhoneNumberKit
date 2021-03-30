@@ -32,7 +32,15 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
             return super.text
         }
     }
-
+    open  var textPhone: String? {
+        set {
+            super.text = newValue
+            NotificationCenter.default.post(name: UITextField.textDidChangeNotification, object: self)
+        }
+        get {
+            return super.text
+        }
+    }
     /// allows text to be set without formatting
     open func setTextUnformatted(newValue: String?) {
         super.text = newValue
@@ -170,7 +178,7 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
     }
 
     // MARK: Status
-
+    static var usedColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
     public var currentRegion: String {
         return self.partialFormatter.currentRegion
     }
@@ -316,11 +324,20 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
 
         self.attributedPlaceholder = ph
     }
-
+    public var pickerBGColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
+    public var pickerTXTColor:UIColor = .white
+    public var navColor:UIColor = .white
+    public var navButtonsColor:UIColor = .white
+    
     @available(iOS 11.0, *)
     @objc func didPressFlagButton() {
         guard withDefaultPickerUI else { return }
+        PhoneNumberTextField.usedColor = pickerBGColor
         let vc = CountryCodePickerViewController(phoneNumberKit: phoneNumberKit)
+        vc.bgColor = pickerBGColor
+        vc.txtColor = pickerTXTColor
+        vc.navColor = navColor
+        vc.navButtonsColor = navButtonsColor
         vc.delegate = self
         if let nav = containingViewController?.navigationController, !PhoneNumberKit.CountryCodePicker.forceModalPresentation {
             nav.pushViewController(vc, animated: true)
