@@ -10,7 +10,6 @@ public protocol CountryCodePickerDelegate: class {
 
 @available(iOS 11.0, *)
 public class CountryCodePickerViewController: UITableViewController {
-
     lazy var searchController = UISearchController(searchResultsController: nil)
 
     public let phoneNumberKit: PhoneNumberKit
@@ -77,7 +76,7 @@ public class CountryCodePickerViewController: UITableViewController {
         self.commonCountryCodes = commonCountryCodes
         super.init(style: .grouped)
         self.commonInit()
-        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .normal)
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes([NSAttributedString.Key.foregroundColor: navColor], for: .normal)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -98,9 +97,14 @@ public class CountryCodePickerViewController: UITableViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
     }
-    let bgColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
+    var bgColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
+    var txtColor:UIColor = .white
+    var navColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
+    var navButtonsColor:UIColor = .white
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationItem.leftBarButtonItem?.tintColor = navButtonsColor
+        navigationItem.backBarButtonItem?.tintColor = navButtonsColor
         //tableView.semanticContentAttribute = .forceLeftToRight
         tableView.sectionIndexColor = .white
         tableView.separatorStyle = UITableViewCell.SeparatorStyle.singleLine
@@ -114,7 +118,7 @@ public class CountryCodePickerViewController: UITableViewController {
             navigationItem.setRightBarButton(cancelButton, animated: true)
         }
         navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.barTintColor = bgColor
+        navigationController?.navigationBar.barTintColor = navColor
     }
 
     public override func viewWillDisappear(_ animated: Bool) {
@@ -147,9 +151,9 @@ public class CountryCodePickerViewController: UITableViewController {
         cell.textLabel?.text = country.prefix + " " + country.flag
         cell.textLabel?.semanticContentAttribute = .forceLeftToRight
         cell.detailTextLabel?.semanticContentAttribute = .forceLeftToRight
-        cell.textLabel?.textColor = .white
+        cell.textLabel?.textColor = txtColor
         cell.detailTextLabel?.text = country.name
-        cell.detailTextLabel?.textColor = .white
+        cell.detailTextLabel?.textColor = txtColor
         cell.textLabel?.font = .preferredFont(forTextStyle: .callout)
         cell.detailTextLabel?.font = .preferredFont(forTextStyle: .body)
         cell.backgroundColor = .clear
@@ -178,7 +182,7 @@ public class CountryCodePickerViewController: UITableViewController {
         let label = UILabel(frame: headerView.frame)
         //label.semanticContentAttribute = .forceLeftToRight
         headerView.addSubview(label)
-        label.textColor = .white
+        label.textColor = txtColor
         label.text = txt
         return headerView
     }
@@ -298,11 +302,10 @@ extension UISearchBar {
     public func setDefaultSearchBar() {
         self.tintColor = .darkGray
         self.barTintColor = .white
-        self.backgroundColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
+        self.backgroundColor = PhoneNumberTextField.usedColor
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.darkGray]
         
-        textField.leftView?.tintColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
-        //textField.placeholder = "Search"//Localization.get("country_search_placeHolder", alternate: "Search")
+        textField.leftView?.tintColor = PhoneNumberTextField.usedColor
         let redPlaceholderText = NSAttributedString(string: textField.placeholder ?? "", attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
         textField.attributedPlaceholder = redPlaceholderText
         textField.backgroundColor = .white
@@ -310,8 +313,6 @@ extension UISearchBar {
         let textFieldInsideSearchBar = self.value(forKey: "searchField") as? UITextField
 
         textFieldInsideSearchBar?.textColor = .darkGray
-
-        //setImage(UIImage(named: "clearIcon"), for: .clear, state: .normal)
         
     }
 }
