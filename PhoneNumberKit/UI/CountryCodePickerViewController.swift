@@ -10,6 +10,7 @@ public protocol CountryCodePickerDelegate: class {
 
 @available(iOS 11.0, *)
 public class CountryCodePickerViewController: UITableViewController {
+
     lazy var searchController = UISearchController(searchResultsController: nil)
 
     public let phoneNumberKit: PhoneNumberKit
@@ -76,7 +77,7 @@ public class CountryCodePickerViewController: UITableViewController {
         self.commonCountryCodes = commonCountryCodes
         super.init(style: .grouped)
         self.commonInit()
-        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes([NSAttributedString.Key.foregroundColor: navButtonsColor], for: .normal)
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .normal)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -92,19 +93,15 @@ public class CountryCodePickerViewController: UITableViewController {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.backgroundColor = bgColor
-        searchController.searchBar.setDefaultSearchBar()
+        searchController.searchBar.setDefaultSearchBar(bgColor: bgColor)
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
     }
-    var bgColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
-    var txtColor:UIColor = .white
-    var navColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
-    var navButtonsColor:UIColor = .white
+    public var bgColor = UIColor(red: 0.471, green: 0.459, blue: 0.949, alpha: 1.0)
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationItem.leftBarButtonItem?.tintColor = navButtonsColor
-        navigationItem.backBarButtonItem?.tintColor = navButtonsColor
+        commonInit()
         //tableView.semanticContentAttribute = .forceLeftToRight
         tableView.sectionIndexColor = .white
         tableView.separatorStyle = UITableViewCell.SeparatorStyle.singleLine
@@ -118,13 +115,17 @@ public class CountryCodePickerViewController: UITableViewController {
             navigationItem.setRightBarButton(cancelButton, animated: true)
         }
         navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.barTintColor = navColor
+        navigationController?.navigationBar.barTintColor = bgColor
     }
 
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(shouldRestoreNavigationBarToHidden, animated: true)
         navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.barTintColor = nil
+        navigationController?.navigationBar.shadowImage = nil
+        navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+        self.navigationController?.navigationBar.barTintColor = .white
     }
 
     @objc func dismissAnimated() {
@@ -151,9 +152,9 @@ public class CountryCodePickerViewController: UITableViewController {
         cell.textLabel?.text = country.prefix + " " + country.flag
         cell.textLabel?.semanticContentAttribute = .forceLeftToRight
         cell.detailTextLabel?.semanticContentAttribute = .forceLeftToRight
-        cell.textLabel?.textColor = txtColor
+        cell.textLabel?.textColor = .white
         cell.detailTextLabel?.text = country.name
-        cell.detailTextLabel?.textColor = txtColor
+        cell.detailTextLabel?.textColor = .white
         cell.textLabel?.font = .preferredFont(forTextStyle: .callout)
         cell.detailTextLabel?.font = .preferredFont(forTextStyle: .body)
         cell.backgroundColor = .clear
@@ -182,7 +183,7 @@ public class CountryCodePickerViewController: UITableViewController {
         let label = UILabel(frame: headerView.frame)
         //label.semanticContentAttribute = .forceLeftToRight
         headerView.addSubview(label)
-        label.textColor = txtColor
+        label.textColor = .white
         label.text = txt
         return headerView
     }
@@ -289,23 +290,24 @@ public extension CountryCodePickerViewController {
 #endif
 
 extension UISearchController {
-    public func setDefaultSearchBar() {
+    public func setDefaultSearchBar(bgColor: UIColor) {
         self.obscuresBackgroundDuringPresentation = false
         self.hidesNavigationBarDuringPresentation = false
         self.dimsBackgroundDuringPresentation = false
         self.searchBar.searchBarStyle = .minimal
         self.definesPresentationContext = true
-        self.searchBar.setDefaultSearchBar()
+        self.searchBar.setDefaultSearchBar(bgColor: bgColor)
     }
 }
 extension UISearchBar {
-    public func setDefaultSearchBar() {
+    public func setDefaultSearchBar(bgColor: UIColor) {
         self.tintColor = .darkGray
         self.barTintColor = .white
-        self.backgroundColor = PhoneNumberTextField.usedColor
+        self.backgroundColor = bgColor
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.darkGray]
         
-        textField.leftView?.tintColor = PhoneNumberTextField.usedColor
+        textField.leftView?.tintColor = bgColor
+        //textField.placeholder = "Search"//Localization.get("country_search_placeHolder", alternate: "Search")
         let redPlaceholderText = NSAttributedString(string: textField.placeholder ?? "", attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
         textField.attributedPlaceholder = redPlaceholderText
         textField.backgroundColor = .white
@@ -313,6 +315,8 @@ extension UISearchBar {
         let textFieldInsideSearchBar = self.value(forKey: "searchField") as? UITextField
 
         textFieldInsideSearchBar?.textColor = .darkGray
+
+        //setImage(UIImage(named: "clearIcon"), for: .clear, state: .normal)
         
     }
 }
@@ -336,3 +340,4 @@ open class FuncApp : NSObject {
         return (Locale.current.identifier.components(separatedBy: "_").first ?? "en")
     }
 }
+
