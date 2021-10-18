@@ -212,6 +212,7 @@ public class CountryCodePickerViewController: UITableViewController {
         let country = self.country(for: indexPath)
         delegate?.countryCodePickerViewControllerDidPickCountry(country)
         tableView.deselectRow(at: indexPath, animated: true)
+        dismissAnimated()
     }
 }
 
