@@ -305,7 +305,7 @@ extension UISearchBar {
         self.tintColor = .darkGray
         self.barTintColor = .white
         self.backgroundColor = bgColor
-        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.darkGray]
+        //UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.darkGray]
         
         textField.leftView?.tintColor = bgColor
         //textField.placeholder = "Search"//Localization.get("country_search_placeHolder", alternate: "Search")
