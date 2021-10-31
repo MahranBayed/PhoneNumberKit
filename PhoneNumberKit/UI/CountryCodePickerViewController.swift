@@ -22,7 +22,7 @@ public class CountryCodePickerViewController: UITableViewController {
     var hasCurrent = true
     var hasCommon = true
 
-    lazy var allCountries = phoneNumberKit
+    lazy public var allCountries = phoneNumberKit
         .allCountries()
         .compactMap({ Country(for: $0, with: self.phoneNumberKit) })
         .sorted(by: { $0.name.caseInsensitiveCompare($1.name) == .orderedAscending })
