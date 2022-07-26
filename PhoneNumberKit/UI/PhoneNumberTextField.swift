@@ -71,6 +71,14 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
             }
         }
     }
+    
+    public var withWritePrefixOnBeginEdit: Bool = true {
+        didSet {
+            if self.withExamplePlaceholder {
+                self.updatePlaceholder()
+            }
+        }
+    }
 
     public var withFlag: Bool = false {
         didSet {
@@ -464,7 +472,7 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
     }
 
     open func textFieldDidBeginEditing(_ textField: UITextField) {
-        if self.withExamplePlaceholder, self.withPrefix, let countryCode = phoneNumberKit.countryCode(for: currentRegion)?.description, (text ?? "").isEmpty {
+        if self.withExamplePlaceholder, self.withPrefix, let countryCode = phoneNumberKit.countryCode(for: currentRegion)?.description, (text ?? "").isEmpty, withWritePrefixOnBeginEdit {
             text = "+" + countryCode + " "
         }
         self._delegate?.textFieldDidBeginEditing?(textField)
