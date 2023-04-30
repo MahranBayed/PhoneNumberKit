@@ -294,26 +294,32 @@ public final class PhoneNumberKit: NSObject {
     ///
     /// - returns: A computed value for the user's current region - based on the iPhone's carrier and if not available, the device region.
     public class func defaultRegionCode() -> String {
+{
+        var skipCTCarrierInfo = false
+        //CTCarrierInfo deprecated on iOS 16
+        if #available(iOS 16.0, *) {
+            skipCTCarrierInfo = true
+        }
+        if !skipCTCarrierInfo {
 #if os(iOS) && !targetEnvironment(simulator) && !targetEnvironment(macCatalyst)
-        let networkInfo = CTTelephonyNetworkInfo()
-        var carrier: CTCarrier? = nil
-        if #available(iOS 12.0, *) {
-            carrier = networkInfo.serviceSubscriberCellularProviders?.values.first
-        } else {
-            carrier = networkInfo.subscriberCellularProvider
-        }
-
-        if let isoCountryCode = carrier?.isoCountryCode {
-            return isoCountryCode.uppercased()
-        }
-#endif
-        let currentLocale = Locale.current
-        if #available(iOS 10.0, *), let countryCode = currentLocale.regionCode {
-            return countryCode.uppercased()
-        } else {
-            if let countryCode = (currentLocale as NSLocale).object(forKey: .countryCode) as? String {
-                return countryCode.uppercased()
+            let networkInfo = CTTelephonyNetworkInfo()
+            var carrier: CTCarrier? = nil
+            if #available(iOS 12.0, *) {
+                carrier = networkInfo.serviceSubscriberCellularProviders?.values.first
+            } else {
+                carrier = networkInfo.subscriberCellularProvider
             }
+            
+            //"__" deprecated value for isoCountryCode
+            if let isoCountryCode = carrier?.isoCountryCode, isoCountryCode != "__" {
+                return isoCountryCode.uppercased()
+            }
+#endif
+        }
+        
+        let currentLocale = Locale.current
+        if let countryCode = (currentLocale as NSLocale).object(forKey: .countryCode) as? String {
+            return countryCode.uppercased()
         }
         return PhoneNumberConstants.defaultCountry
     }
