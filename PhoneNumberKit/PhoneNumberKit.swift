@@ -294,7 +294,6 @@ public final class PhoneNumberKit: NSObject {
     ///
     /// - returns: A computed value for the user's current region - based on the iPhone's carrier and if not available, the device region.
     public class func defaultRegionCode() -> String {
-{
         var skipCTCarrierInfo = false
         //CTCarrierInfo deprecated on iOS 16
         if #available(iOS 16.0, *) {
