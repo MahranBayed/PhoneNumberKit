@@ -82,9 +82,22 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
 
     public var withFlag: Bool = false {
         didSet {
-            leftView = self.withFlag ? self.flagButton : nil
+            let spaceView = UIView()
+            spaceView.backgroundColor = .clear
+            spaceView.widthAnchor.constraint(equalToConstant: withFlagCountryCode ? 10 : 0).isActive = true
+            let stackView = UIStackView(arrangedSubviews: [self.flagButton, spaceView])
+            stackView.semanticContentAttribute = .forceLeftToRight
+            leftView = self.withFlag ? stackView : nil
             leftViewMode = self.withFlag ? .always : .never
             self.updateFlag()
+        }
+    }
+    
+    public var withFlagCountryCode: Bool = false {
+        didSet {
+            //reset flag drawings
+            let oldValue = self.withFlag
+            self.withFlag = oldValue
         }
     }
 
@@ -215,6 +228,7 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
         if self.withFlag { // update the width of the flagButton automatically, iOS <13 doesn't handle this for you
             let width = self.flagButton.systemLayoutSizeFitting(bounds.size).width
             self.flagButton.frame.size.width = width
+            setFlagRounded()
         }
         super.layoutSubviews()
     }
@@ -295,10 +309,30 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
             .unicodeScalars
             .compactMap { UnicodeScalar(flagBase + $0.value)?.description }
             .joined()
-
-        self.flagButton.setTitle(flag + " ", for: .normal)
+        
+        let countryFlagCode = internationalPrefix(for:  self.currentRegion) ?? ""
+        
+        self.flagButton.setTitle((withFlagCountryCode ? " \(flag)\(countryFlagCode) " : flag + " "), for: .normal)
         let fontSize = (font ?? UIFont.preferredFont(forTextStyle: .body)).pointSize
-        self.flagButton.titleLabel?.font = UIFont.systemFont(ofSize: fontSize)
+        if withFlagCountryCode {
+            self.flagButton.titleLabel?.font = UIFont.systemFont(ofSize: fontSize - 5)
+            self.flagButton.layer.borderColor = UIColor.white.withAlphaComponent(0.5).cgColor
+            self.flagButton.layer.borderWidth = 1
+        }
+        else {
+            self.flagButton.titleLabel?.font = UIFont.systemFont(ofSize: fontSize)
+            self.flagButton.layer.borderColor = UIColor.clear.cgColor
+            self.flagButton.layer.borderWidth = 0
+        }
+        self.setFlagRounded()
+    }
+    
+    func setFlagRounded() {
+        var rounded = self.flagButton.frame.height / 2.0
+        if rounded <= 0 {
+            rounded = 20
+        }
+        self.flagButton.layer.cornerRadius = withFlagCountryCode ? rounded : 0
     }
 
     open func updatePlaceholder() {
