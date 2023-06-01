@@ -321,7 +321,7 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
         self.flagButton.setTitle((withFlagCountryCode ? " \(flag)\(countryFlagCode) " : flag + " "), for: .normal)
         let fontSize = (font ?? UIFont.preferredFont(forTextStyle: .body)).pointSize
         if withFlagCountryCode {
-            self.flagButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 10)
+            self.flagButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
             self.flagButton.layer.borderColor = UIColor.white.withAlphaComponent(0.5).cgColor
             self.flagButton.layer.borderWidth = 1
         }
