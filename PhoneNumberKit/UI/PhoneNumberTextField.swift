@@ -86,6 +86,12 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
             spaceView.backgroundColor = .clear
             spaceView.widthAnchor.constraint(equalToConstant: withFlagCountryCode ? 10 : 0).isActive = true
             let stackView = UIStackView(arrangedSubviews: [self.flagButton, spaceView])
+            if withFlagCountryCode {
+                self.flagButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
+                self.flagButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
+                self.flagButton.contentHorizontalAlignment = .center
+                self.flagButton.titleLabel?.textAlignment = .center
+            }
             stackView.semanticContentAttribute = .forceLeftToRight
             leftView = self.withFlag ? stackView : nil
             leftViewMode = self.withFlag ? .always : .never
@@ -315,7 +321,7 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
         self.flagButton.setTitle((withFlagCountryCode ? " \(flag)\(countryFlagCode) " : flag + " "), for: .normal)
         let fontSize = (font ?? UIFont.preferredFont(forTextStyle: .body)).pointSize
         if withFlagCountryCode {
-            self.flagButton.titleLabel?.font = UIFont.systemFont(ofSize: fontSize - 5)
+            self.flagButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 10)
             self.flagButton.layer.borderColor = UIColor.white.withAlphaComponent(0.5).cgColor
             self.flagButton.layer.borderWidth = 1
         }
@@ -330,7 +336,7 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
     func setFlagRounded() {
         var rounded = self.flagButton.frame.height / 2.0
         if rounded <= 0 {
-            rounded = 20
+            rounded = 22.5
         }
         self.flagButton.layer.cornerRadius = withFlagCountryCode ? rounded : 0
     }
