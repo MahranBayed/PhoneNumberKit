@@ -560,7 +560,6 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
             self.partialFormatter.defaultRegion = self.currentRegion
             self.updateFlag()
             self.updatePlaceholder()
-            textField.selectedTextRange = textField.textRange(from: textField.endOfDocument, to: textField.endOfDocument)
         }
 
         return false
