@@ -552,7 +552,6 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
             textField.selectedTextRange = selectionRange
         }
 
-        textField.selectedTextRange = textField.textRange(from: textField.endOfDocument, to: textField.endOfDocument)
         // we change the default region to be the one most recently typed
         // but only when the withFlag is true as to not confuse the user who don't see the flag
         if withFlag == true
@@ -561,6 +560,7 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
             self.partialFormatter.defaultRegion = self.currentRegion
             self.updateFlag()
             self.updatePlaceholder()
+            textField.selectedTextRange = textField.textRange(from: textField.endOfDocument, to: textField.endOfDocument)
         }
 
         return false
