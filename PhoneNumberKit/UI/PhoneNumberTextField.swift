@@ -549,7 +549,7 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
         sendActions(for: .editingChanged)
         if let selectedTextRange = selectedTextRange, let selectionRangePosition = textField.position(from: beginningOfDocument, offset: selectedTextRange.location) {
             let selectionRange = textField.textRange(from: selectionRangePosition, to: selectionRangePosition)
-            textField.selectedTextRange = selectionRange
+            textField.selectedTextRange = textField.textRange(from: textField.endOfDocument, to: textField.endOfDocument)
         }
 
         // we change the default region to be the one most recently typed
