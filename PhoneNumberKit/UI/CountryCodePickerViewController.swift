@@ -301,7 +301,6 @@ extension UISearchController {
     public func setDefaultSearchBar(bgColor: UIColor) {
         self.obscuresBackgroundDuringPresentation = false
         self.hidesNavigationBarDuringPresentation = false
-        self.dimsBackgroundDuringPresentation = false
         self.searchBar.searchBarStyle = .minimal
         self.definesPresentationContext = true
         self.searchBar.setDefaultSearchBar(bgColor: bgColor)
