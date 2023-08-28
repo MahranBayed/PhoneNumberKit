@@ -10,6 +10,9 @@ import Foundation
 #if canImport(Contacts)
 import Contacts
 #endif
+#if canImport(CoreTelephony)
+import CoreTelephony
+#endif
 
 public typealias MetadataCallback = (() throws -> Data?)
 
