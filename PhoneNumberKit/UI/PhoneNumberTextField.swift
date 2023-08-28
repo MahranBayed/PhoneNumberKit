@@ -359,7 +359,6 @@ open class PhoneNumberTextField: UITextField, UITextFieldDelegate {
         
         self.flagButton.setTitle((withFlagCountryCode ? " \(flag)\(countryFlagCode) " : flag + " "), for: .normal)
         
-        self.flagButton.setTitle(flag + " ", for: .normal)
         self.flagButton.accessibilityLabel = NSLocalizedString(
             "PhoneNumberKit.CountryCodePickerEntryButton.AccessibilityLabel",
             value: "Select your country code",
