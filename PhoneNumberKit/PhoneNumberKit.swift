@@ -47,7 +47,7 @@ public final class PhoneNumberKit {
             guard numberString.prefix(countryCode.count) == countryCode else {
                 throw error
             }
-            return try self.parse("+\(numberString)", withRegion: region, ignoreType: ignoreType)
+            return try self.parseManager.parse("+\(numberString)", withRegion: region, ignoreType: ignoreType)
         }
     }
 
