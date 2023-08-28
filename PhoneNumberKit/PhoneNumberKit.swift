@@ -36,17 +36,21 @@ public final class PhoneNumberKit {
     ///   - ignoreType: Avoids number type checking for faster performance.
     /// - Returns: PhoneNumber object.
     public func parse(_ numberString: String, withRegion region: String = PhoneNumberKit.defaultRegionCode(), ignoreType: Bool = false) throws -> PhoneNumber {
-        var numberStringWithPlus = numberString
         let region = region.uppercased()
         do {
             return try self.parseManager.parse(numberString, withRegion: region, ignoreType: ignoreType)
         } catch {
-            if numberStringWithPlus.first != "+" {
-                numberStringWithPlus = "+" + numberStringWithPlus
+            guard numberString.first != "+", let regionMetadata = metadataManager.filterTerritories(byCountry: region) else {
+                throw error
             }
+            let countryCode = String(regionMetadata.countryCode)
+            guard numberString.prefix(countryCode.count) == countryCode else {
+                throw error
+            }
+            return try self.parse("+\(numberString)", withRegion: region, ignoreType: ignoreType)
         }
-        return try self.parseManager.parse(numberStringWithPlus, withRegion: region, ignoreType: ignoreType)
     }
+    
     /// Parses an array of number strings. Optimised for performance. Invalid numbers are ignored in the resulting array
     ///
     /// - parameter numberStrings:               array of raw number strings.
